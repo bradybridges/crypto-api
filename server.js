@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+app.use(express.json());
 
 const environment = process.env.NODE_ENV || 'development';
 const configuration = require('./knexfile')[environment];
@@ -78,43 +79,23 @@ app.get('/api/v1/users/:username', (request, response) => {
 });
 
 app.post('/api/v1/coindata', (request, response) => {
-  //Add data for a day to specific coin db
+  const receivedData = request.body;
+  console.log(receivedData);
+  for (let requiredParameter of ['coinId', 'date', 'name', 'price', 'marketCap']) {
+    if (!receivedData[requiredParameter]) {
+      return response
+        .status(422)
+        .send({ error: `Expected format: { coinId: <Integer>, date: <String>, name: <String>, price: <Integer>, marketCap: <Integer> }. You're missing a "${requiredParameter}" property.`});
+    }
+  }
+  database('coindata').insert(receivedData, 'id')
+    .then(coinData => {
+      response.status(201).json({ ...coinData })
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
 });
-
-// app.get('/api/v1/papers/:id', (request, response) => {
-//   database('papers').where('id', request.params.id).select()
-//     .then(papers => {
-//       if (papers.length) {
-//         response.status(200).json(papers);
-//       } else {
-//         response.status(404).json({ 
-//           error: `Could not find paper with id ${request.params.id}`
-//         });
-//       }
-//     })
-//     .catch(error => {
-//       response.status(500).json({ error });
-//     });
-// });
-
-// app.post('/api/v1/papers', (request, response) => {
-//   const receivedPaper = request.body;
-//   console.log(receivedPaper)
-//   for (let requiredParameter of ['title', 'author']) {
-//     if (!receivedPaper[requiredParameter]) {
-//       return response
-//         .status(422)
-//         .send({ error: `Expected format: { title: <String>, author: <String> }. You're missing a "${requiredParameter}" property.` });
-//     }
-//   }
-//   database('papers').insert(receivedPaper, 'id')
-//     .then(paper => {
-//       response.status(201).json({ ...receivedPaper, id: paper[0] })
-//     })
-//     .catch(error => {
-//       response.status(500).json({ error });
-//     });
-// });
 
 app.post('/api/v1/portfolio/:name', (request, response) => {
   //Add a new item to portfolio
