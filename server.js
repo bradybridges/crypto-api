@@ -1,11 +1,21 @@
 const express = require('express');
 const app = express();
 
+const environment = process.env.NODE_ENV || 'development';
+const configuration = require('./knexfile')[environment];
+const database = require('knex')(configuration);
+
 app.set('port', process.env.PORT || 3000);
 app.locals.title = 'Crypto Api';
 
 app.get('/api/v1/coindata', (request, response) => {
-  //return all coin data
+  database('coindata').select()
+    .then( (data) => {
+      response.status(200).json(data);
+    })
+    .catch((err) => {
+      response.status(500).json({ err });
+    });
 });
 
 app.get('/api/v1/coindata/:date', (request, response) => {
