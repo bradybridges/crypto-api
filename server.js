@@ -9,7 +9,7 @@ app.set('port', process.env.PORT || 3000);
 app.locals.title = 'Crypto Api';
 
 app.get('/api/v1/coindata', (request, response) => {
-  database('coindata').select()
+  database('coindata').orderBy('date')
     .then( (data) => {
       response.status(200).json(data);
     })
@@ -19,13 +19,13 @@ app.get('/api/v1/coindata', (request, response) => {
 });
 
 app.get('/api/v1/coindata/:date', (request, response) => {
-  database('coindata').where('date', request.params.date).select()
+  database('coindata').where('date', request.params.date)
     .then((data) => {
         if(data.length) {
           response.status(200).json(data);
         } else {
           response.status(404).json({
-            error: `Could not find coin data on data ${request.params.data}`
+            error: `Could not find coin data on date ${request.params.data}`
           });
         }
     })
@@ -34,12 +34,25 @@ app.get('/api/v1/coindata/:date', (request, response) => {
     });
 });
 
-app.get('/api/v1/coindata/:name', (request, response) => {
-  //return all coin data for specific coin
-});
+// app.get('/api/v1/coindata/:name', (request, response) => {
+//   database('coindata').where('name', request.params.name).select()
+//     .then((data) => {
+//       if(data.length) {
+//         response.status(200).json(data);
+//       } else {
+//         response.status(404).json({
+//           error: `Could not find coin with name ${request.params.name}`
+//         });
+//       }
+//     })
+//     .catch((err) => {
+//       request.status(500).json({ err });
+//     });
+// });
+//Update to figure out whether user is filtering by date or name. Refactor with above endpoint!
 
 app.get('/api/v1/users', (request, response) => {
-  database('users').select()
+  database('users').orderBy('username')
     .then((data) => {
       response.status(200).json(data);
     })
@@ -48,13 +61,60 @@ app.get('/api/v1/users', (request, response) => {
     });
 });
 
-app.get('/api/v1/portfolio/:name', (request, response) => {
-  //return portfolio data for specific coin
+app.get('/api/v1/users/:username', (request, response) => {
+  database('users').where('username', request.params.username).select()
+    .then((data) => {
+      if(data.length) {
+        response.status(200).json(data);
+      } else {
+        response.status(404).json({
+          error: `Unable to find user with username ${request.params.username}`
+        })
+      }
+    })
+    .catch((err) => {
+      response.status(500).json({ err });
+    })
 });
 
-app.post('/api/v1/coindata/:name', (request, response) => {
+app.post('/api/v1/coindata', (request, response) => {
   //Add data for a day to specific coin db
 });
+
+// app.get('/api/v1/papers/:id', (request, response) => {
+//   database('papers').where('id', request.params.id).select()
+//     .then(papers => {
+//       if (papers.length) {
+//         response.status(200).json(papers);
+//       } else {
+//         response.status(404).json({ 
+//           error: `Could not find paper with id ${request.params.id}`
+//         });
+//       }
+//     })
+//     .catch(error => {
+//       response.status(500).json({ error });
+//     });
+// });
+
+// app.post('/api/v1/papers', (request, response) => {
+//   const receivedPaper = request.body;
+//   console.log(receivedPaper)
+//   for (let requiredParameter of ['title', 'author']) {
+//     if (!receivedPaper[requiredParameter]) {
+//       return response
+//         .status(422)
+//         .send({ error: `Expected format: { title: <String>, author: <String> }. You're missing a "${requiredParameter}" property.` });
+//     }
+//   }
+//   database('papers').insert(receivedPaper, 'id')
+//     .then(paper => {
+//       response.status(201).json({ ...receivedPaper, id: paper[0] })
+//     })
+//     .catch(error => {
+//       response.status(500).json({ error });
+//     });
+// });
 
 app.post('/api/v1/portfolio/:name', (request, response) => {
   //Add a new item to portfolio
