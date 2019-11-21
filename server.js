@@ -19,7 +19,19 @@ app.get('/api/v1/coindata', (request, response) => {
 });
 
 app.get('/api/v1/coindata/:date', (request, response) => {
-  //return all coin data for specific date
+  database('coindata').where('date', request.params.date).select()
+    .then((data) => {
+        if(data.length) {
+          response.status(200).json(data);
+        } else {
+          response.status(404).json({
+            error: `Could not find coin data on data ${request.params.data}`
+          });
+        }
+    })
+    .catch((err) => {
+      response.status(500).json({ err });
+    });
 });
 
 app.get('/api/v1/coindata/:name', (request, response) => {
@@ -59,4 +71,3 @@ app.delete('/api/v1/portfolio/:name', (request, response) => {
 app.listen(app.get('port'), () => {
   console.log(`${app.locals.title} is running on http://localhost:${app.get('port')}.`);
 });
-
