@@ -1,13 +1,26 @@
+const coinData = require('../../../data/coindata');
+
+const createCoinEntry = (knex, data) => {
+  const { coinId, date, name, price, marketCap } = data;
+  return knex('coindata').insert({
+    coinId,
+    date,
+    name,
+    price,
+    marketCap,
+  });
+};
+
+// coinId | date | name | price | marketCap
 
 exports.seed = function(knex) {
-  // Deletes ALL existing entries
-  return knex('table_name').del()
-    .then(function () {
-      // Inserts seed entries
-      return knex('table_name').insert([
-        {id: 1, colName: 'rowValue1'},
-        {id: 2, colName: 'rowValue2'},
-        {id: 3, colName: 'rowValue3'}
-      ]);
+  return knex('coindata').del()
+  .then(() => {
+    let coinPromises = [];
+    coinData.forEach(coin => {
+      coinPromises.push(createCoinEntry(knex, coin));
     });
+    return Promise.all(coinPromises);
+  })
+  .catch(error => console.log(`Error seeding data: ${error}`));
 };
