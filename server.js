@@ -90,15 +90,30 @@ app.post('/api/v1/coindata', (request, response) => {
   }
   database('coindata').insert(receivedData, 'id')
     .then(coinData => {
-      response.status(201).json({ ...coinData })
+      response.status(201).json({ ...coinData });
     })
-    .catch(error => {
-      response.status(500).json({ error });
+    .catch(err => {
+      response.status(500).json({ err });
     });
 });
 
-app.post('/api/v1/portfolio/:name', (request, response) => {
-  //Add a new item to portfolio
+app.post('/api/v1/users', (request, response) => {
+  const receivedUser = request.body;
+  console.log(receivedUser);
+  for(let requiredParam of ['coinId', 'coinname', 'username', 'qty']) {
+    if(!receivedUser[requiredParam]) {
+      return response
+        .status(422)
+        .send({ error: `Expected format: { coinId: <integer>, coinname: <String>, username: <String>, qty: <integer> }. You're missing a "${requiredParameter}" property.`});
+    }
+  }
+  database('users').insert(receivedUser, 'username')
+    .then( newUser => {
+      response.status(201).json({ ...newUser });
+    })
+    .catch((err) => {
+      response.status(500).json({ err });
+    })
 });
 
 app.post('/api/v1/portfolio', (request, response) => {
