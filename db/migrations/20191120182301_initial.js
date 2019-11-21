@@ -3,18 +3,24 @@ exports.up = function(knex) {
   return Promise.all([
     knex.schema.createTable('coindata', (table) => {
       table.increments('id').primary();
+      table.integer('coinId');
       table.string('date');
       table.string('name').unique();
-      table.integer('price').unsigned();
-      table.integer('marketCap').unsigned();
+      table.double('price').unsigned();
+      table.double('marketCap').unsigned();
       table.timestamps(true, true);
     }),
     knex.schema.createTable('portfolio', (table) => {
       table.increments('id').primary();
+      table.integer('coinId');
+      table.foreign('coinId').references('joiner.coinId');
       table.string('name');
-      table.foreign('name').references('name').inTable('coindata');
       table.integer('qty').unsigned();
       table.timestamps(true, true);
+    }),
+    knex.schema.createTable('joiner', (table) => {
+      table.string('name');
+      table.increments('coinId').primary();
     }),
   ]);
 };
