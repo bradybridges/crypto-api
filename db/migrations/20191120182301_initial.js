@@ -10,11 +10,12 @@ exports.up = function(knex) {
       table.double('marketCap').unsigned();
       table.timestamps(true, true);
     }),
-    knex.schema.createTable('portfolio', (table) => {
+    knex.schema.createTable('users', (table) => {
       table.increments('id').primary();
-      table.integer('coinId');
+      table.integer('coinId').unsigned();
       table.foreign('coinId').references('joiner.coinId');
-      table.string('name');
+      table.string('coinname');
+      table.string('username');
       table.integer('qty').unsigned();
       table.timestamps(true, true);
     }),

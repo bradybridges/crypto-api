@@ -18,9 +18,9 @@ const createJoiner = (knex, coinNames) => {
     });
     return Promise.all(coinPromises);
 };
-
-const createPortfolio = (knex, coinNames) => {
-  const coinPromises = [];
+// coinId | coinname | username | qty 
+const createUsers = (knex, coinNames) => {
+  const userPromises = [];
   coinNames.forEach((name, i) => {
     const coinId = i + 1;
     coinPromises.push(knex('portfolio').insert({ coinId, name, qty: 0 }));
