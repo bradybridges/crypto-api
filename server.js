@@ -26,8 +26,14 @@ app.get('/api/v1/coindata/:name', (request, response) => {
   //return all coin data for specific coin
 });
 
-app.get('/api/v1/portfolio', (request, response) => {
-  //return all portfolio data
+app.get('/api/v1/users', (request, response) => {
+  database('users').select()
+    .then((data) => {
+      response.status(200).json(data);
+    })
+    .catch((err) => {
+      response.status(500).json({ err });
+    });
 });
 
 app.get('/api/v1/portfolio/:name', (request, response) => {
