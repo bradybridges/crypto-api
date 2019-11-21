@@ -5,7 +5,7 @@ exports.up = function(knex) {
       table.increments('id').primary();
       table.integer('coinId');
       table.string('date');
-      table.string('name').unique();
+      table.string('name');
       table.double('price').unsigned();
       table.double('marketCap').unsigned();
       table.timestamps(true, true);
@@ -28,6 +28,7 @@ exports.up = function(knex) {
 exports.down = function(knex) {
   return Promise.all([
     knex.schema.dropTable('portfolio'),
+    knex.schema.dropTable('joiner'),
     knex.schema.dropTable('coindata'),
   ]);
 };
