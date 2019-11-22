@@ -80,7 +80,6 @@ app.get('/api/v1/users/:username', (request, response) => {
 
 app.post('/api/v1/coindata', (request, response) => {
   const receivedData = request.body;
-  console.log(receivedData);
   for (let requiredParameter of ['coinId', 'date', 'name', 'price', 'marketCap']) {
     if (!receivedData[requiredParameter]) {
       return response
@@ -99,12 +98,11 @@ app.post('/api/v1/coindata', (request, response) => {
 
 app.post('/api/v1/users', (request, response) => {
   const receivedUser = request.body;
-  console.log(receivedUser);
   for(let requiredParam of ['coinId', 'coinname', 'username', 'qty']) {
     if(!receivedUser[requiredParam]) {
       return response
         .status(422)
-        .send({ error: `Expected format: { coinId: <integer>, coinname: <String>, username: <String>, qty: <integer> }. You're missing a "${requiredParameter}" property.`});
+        .send({ error: `Expected format: { coinId: <integer>, coinname: <String>, username: <String>, qty: <integer> }. You're missing a "${requiredParam}" property.`});
     }
   }
   database('users').insert(receivedUser, 'username')
@@ -116,12 +114,26 @@ app.post('/api/v1/users', (request, response) => {
     })
 });
 
-app.post('/api/v1/portfolio', (request, response) => {
-  //Update entire portfolio
-});
+app.delete('/api/v1/users', (request, response) => {
+  const body = request.body;
+  database('users')
+    .where({ username: body.username })
+    .select()
+    .then((user) => {
+      if(!user.length) {
+        return response.status(205).send({ message: 'User does not exist' })
+      }
 
-app.delete('/api/v1/portfolio/:name', (request, response) => {
-  //delete a particular item from portfolio
+      database('users')
+        .where({ username: body.username })
+        .del()
+        .then(() => {
+          response.status(202).json({ message: `Successfully deleted user ${body.username}` });
+        });
+    })
+    .catch((err) => {
+      response.status(500).json({ err });
+    })
 });
 
 app.listen(app.get('port'), () => {
