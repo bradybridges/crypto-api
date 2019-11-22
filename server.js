@@ -9,6 +9,10 @@ const database = require('knex')(configuration);
 app.set('port', process.env.PORT || 3000);
 app.locals.title = 'Coin Api';
 
+app.get('/', (request, response) => {
+  response.status(200).send('Welcome to Coin Api');
+})
+
 app.get('/api/v1/coindata', (request, response) => {
   database('coindata').orderBy('date')
     .then( (data) => {
