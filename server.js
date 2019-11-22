@@ -7,7 +7,7 @@ const configuration = require('./knexfile')[environment];
 const database = require('knex')(configuration);
 
 app.set('port', process.env.PORT || 3000);
-app.locals.title = 'Crypto Api';
+app.locals.title = 'Coin Api';
 
 app.get('/api/v1/coindata', (request, response) => {
   database('coindata').orderBy('date')
@@ -19,14 +19,14 @@ app.get('/api/v1/coindata', (request, response) => {
     });
 });
 
-app.get('/api/v1/coindata/:date', (request, response) => {
-  database('coindata').where('date', request.params.date)
+app.get('/api/v1/coindata/date/:date', (request, response) => {
+  database('coindata').where('date', request.params.date).orderBy('coinId')
     .then((data) => {
         if(data.length) {
           response.status(200).json(data);
         } else {
           response.status(404).json({
-            error: `Could not find coin data on date ${request.params.data}`
+            error: `Could not find coin data for date ${request.params.date}`
           });
         }
     })
@@ -35,22 +35,21 @@ app.get('/api/v1/coindata/:date', (request, response) => {
     });
 });
 
-// app.get('/api/v1/coindata/:name', (request, response) => {
-//   database('coindata').where('name', request.params.name).select()
-//     .then((data) => {
-//       if(data.length) {
-//         response.status(200).json(data);
-//       } else {
-//         response.status(404).json({
-//           error: `Could not find coin with name ${request.params.name}`
-//         });
-//       }
-//     })
-//     .catch((err) => {
-//       request.status(500).json({ err });
-//     });
-// });
-//Update to figure out whether user is filtering by date or name. Refactor with above endpoint!
+app.get('/api/v1/coindata/name/:name', (request, response) => {
+  database('coindata').where('name', request.params.name).orderBy('date')
+    .then((data) => {
+      if(data.length) {
+        response.status(200).json(data);
+      } else {
+        response.status(404).json({
+          error: `Could not find coin with name ${request.params.name}`
+        });
+      }
+    })
+    .catch((err) => {
+      request.status(500).json({ err });
+    });
+});
 
 app.get('/api/v1/users', (request, response) => {
   database('users').orderBy('username')
@@ -70,6 +69,22 @@ app.get('/api/v1/users/:username', (request, response) => {
       } else {
         response.status(404).json({
           error: `Unable to find user with username ${request.params.username}`
+        })
+      }
+    })
+    .catch((err) => {
+      response.status(500).json({ err });
+    })
+});
+
+app.get('/api/v1/users/coin/:coinname', (request, response) => {
+  database('users').where('coinname', request.params.coinname).orderBy('username')
+    .then((data) => {
+      if(data.length) {
+        response.status(200).json(data);
+      } else {
+        response.status(404).json({
+          error: `Unable to find users that hold coins with name ${request.params.coinname}`
         })
       }
     })
@@ -114,6 +129,27 @@ app.post('/api/v1/users', (request, response) => {
     })
 });
 
+app.delete('/api/v1/coindata', (request, response) => {
+  const body = request.body;
+  database('coindata')
+    .where({ date: body.date })
+    .select()
+    .then((data) =>{
+      if(!data.length) {
+        return response.status(205).send({ error: 'No data to delete' });
+      }
+      database('coindata')
+        .where({ date: body.date })
+        .del()
+        .then(() => {
+          response.status(202).json({ message: `Successfully deleted data on date: ${body.date}` });
+        })
+    })
+    .catch((err) => {
+      response.status(500).json({ err });
+    });
+});
+
 app.delete('/api/v1/users', (request, response) => {
   const body = request.body;
   database('users')
@@ -121,7 +157,7 @@ app.delete('/api/v1/users', (request, response) => {
     .select()
     .then((user) => {
       if(!user.length) {
-        return response.status(205).send({ message: 'User does not exist' })
+        return response.status(205).send({ error: 'User does not exist' })
       }
 
       database('users')
