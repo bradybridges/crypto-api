@@ -47,5 +47,18 @@ export const getUser = async (username) => {
     return user;
   }
 }
-  
-  
+
+export const deleteUser = async (username) => {
+  const response = await fetch('https://heroku-coin-api.herokuapp.com/api/v1/users', {
+    method: 'DELETE',
+    headers: { 'content-type': 'application/json'},
+    body: JSON.stringify({
+      username
+    })
+  });
+  if(!response.ok) {
+    return Error('Failed to delete user');
+  }
+  const resp = await response.json();
+  return resp;
+}

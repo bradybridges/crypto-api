@@ -6,22 +6,17 @@ import {
   getCoinDataByName,
   getUser,
 } from '../../apiCalls';
-import EndpointDiv from '../EndpointDiv/EndpointDiv';
+import { 
+  coinDataFetch,
+  dateCoinFetch, 
+  nameCoinFetch, 
+  usersFetch,
+  userFetch,
+} from '../../formattedFetchExamples';
+import GetEndpointDiv from '../GetEndpointDiv/GetEndpointDiv';
+import DeleteDiv from '../DeleteDiv/DeleteDiv';
 
 class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      coinData: [],
-      userData: [],
-    }
-  }
-
-  // componentDidMount = () => {
-  //   this.setCoinData();
-  //   this.setUserData();
-  // }
-
   printCoinData = () => {
     getCoinData()
       .then((resp) => console.log(resp))
@@ -52,10 +47,14 @@ class App extends Component {
       .catch((err) => console.log(err));
   }
 
-  renderCoinData = () => {
-    const data = getCoinData()
-      .then((resp) => resp.map((coin) => <h1>{coin.name}</h1>));
-    return data;
+  simulateDeleteUser = (username) => {
+    const message = { message: `Successfully deleted user with username ${username}`};
+    console.log(message);
+  }
+
+  simulateDeleteRecord = (date) => {
+    const message = { message: `Successfully deleted records on date: ${date}`};
+    console.log(message);
   }
   
   render() {
@@ -64,41 +63,51 @@ class App extends Component {
         <h1>Coin Api Documentation</h1>
         <section id="endpoints">
           <h2>Endpoints</h2>
-          <EndpointDiv 
+          <GetEndpointDiv 
             title='GET All Coin Data' 
             endpoint='https://heroku-coin-api.herokuapp.com/api/v1/coindata'
             handleClick={this.printCoinData}
-            fetch='hello'
+            fetch={coinDataFetch}
           />
-          <EndpointDiv
-            title='Get All User Data'
+          <GetEndpointDiv
+            title='GET All User Data'
             endpoint='https://heroku-coin-api.herokuapp.com/api/v1/users'
             handleClick={this.printUserData}
-            fetch='Example fetch'
+            fetch={usersFetch}
           />
-          <EndpointDiv
-            title='Get All Coin Data On Date'
+          <GetEndpointDiv
+            title='GET All Coin Data On Date'
             endpoint='https://heroku-coin-api.herokuapp.com/api/v1/coindata/date/:date'
             handleClick={this.printDateData}
-            parameters={['date']}
-
-            fetch='Example fetch'
+            fetch={dateCoinFetch}
           />
-          <EndpointDiv
-            title='Get All Coin Data By Name'
+          <GetEndpointDiv
+            title='GET All Coin Data By Name'
             endpoint='https://heroku-coin-api.herokuapp.com/api/v1/coindata/name/:name'
             handleClick={this.printCoinNameData}
-            fetch='Example fetch'
-            parameters={['name']}
+            fetch={nameCoinFetch}
           />
-          <EndpointDiv
-            title='Get A User By Username'
+          <GetEndpointDiv
+            title='GET A User By Username'
             endpoint='https://heroku-coin-api.herokuapp.com/api/v1/users/:name'
             handleClick={this.printUser}
-            fetch='Example fetch'
-            parameters={['username']}
+            fetch={userFetch}
           />
-
+          <DeleteDiv
+            title='DELETE A User'
+            endpoint='https://heroku-coin-api.herokuapp.com/api/v1/users'
+            handleClick={this.simulateDeleteUser}
+            fetch='Fill in later'
+            parameter='username'
+          />
+          <DeleteDiv
+            title='DELETE A Record On A Date'
+            endpoint='https://heroku-coin-api.herokuapp.com/api/v1/users'
+            handleClick={this.simulateDeleteRecord}
+            fetch='Fill in later'
+            parameter='date'
+            type='date'
+          />
         </section>
       </main>
     );
