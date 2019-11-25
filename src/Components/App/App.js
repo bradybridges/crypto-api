@@ -12,6 +12,10 @@ import {
   nameCoinFetch, 
   usersFetch,
   userFetch,
+  deleteUser,
+  deleteRecord,
+  insertRecord,
+  insertUser,
 } from '../../formattedFetchExamples';
 import GetEndpointDiv from '../GetEndpointDiv/GetEndpointDiv';
 import DeleteDiv from '../DeleteDiv/DeleteDiv';
@@ -56,6 +60,14 @@ class App extends Component {
     const message = { message: `Successfully deleted records on date: ${date}`};
     console.log(message);
   }
+
+  simulateCoinInsertion = () => {
+    console.log({ 0: 954 });
+  }
+  
+  simulateUserInsertion = () => {
+    console.log({ 0: "Bran" });
+  }
   
   render() {
     return (
@@ -93,18 +105,43 @@ class App extends Component {
             handleClick={this.printUser}
             fetch={userFetch}
           />
+          <GetEndpointDiv 
+            title='POST New Record' 
+            endpoint='https://heroku-coin-api.herokuapp.com/api/v1/coindata'
+            handleClick={this.simulateCoinInsertion}
+            fetch={insertRecord}
+            parameters={[
+              'name <String>',
+              'coinId: <Integer>', 
+              'date <String> yyyy/mm/dd', 
+              'price <Double>', 
+              'marketCap <Double>'
+            ]}
+          />
+          <GetEndpointDiv 
+            title='POST A New User' 
+            endpoint='https://heroku-coin-api.herokuapp.com/api/v1/users'
+            handleClick={this.simulateUserInsertion}
+            fetch={insertUser}
+            parameters={[
+              'username <String>',
+              'coinname <String>',
+              'coinId <Integer>',
+              'qty <Integer>'
+            ]}
+          />
           <DeleteDiv
             title='DELETE A User'
             endpoint='https://heroku-coin-api.herokuapp.com/api/v1/users'
             handleClick={this.simulateDeleteUser}
-            fetch='Fill in later'
+            fetch={deleteUser}
             parameter='username'
           />
           <DeleteDiv
             title='DELETE A Record On A Date'
             endpoint='https://heroku-coin-api.herokuapp.com/api/v1/users'
             handleClick={this.simulateDeleteRecord}
-            fetch='Fill in later'
+            fetch={deleteRecord}
             parameter='date'
             type='date'
           />

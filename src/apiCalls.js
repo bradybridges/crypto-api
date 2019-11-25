@@ -62,3 +62,16 @@ export const deleteUser = async (username) => {
   const resp = await response.json();
   return resp;
 }
+
+export const deleteRecord = async (date) => {
+  const response = await fetch('https://heroku-coin-api.herokuapp.com/api/v1/coin', {
+    method: 'DELETE',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ date })
+  })
+  if(!response.ok) {
+    return Error('Failed to delete record');
+  }
+  const resp = await response.json();
+  return resp;
+}
