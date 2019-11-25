@@ -15,7 +15,7 @@ const GetEndpointDiv = ({ title, endpoint, handleClick, fetch, parameters }) => 
       )}
       <h4>JS example</h4>
       <pre>{fetch}</pre>
-      <button onClick={handleClick}>Run</button>
+      <button onClick={handleClick}>Run Example</button>
     </div>
   );
 }

@@ -42,7 +42,7 @@ export const usersFetch = 'const getUsers = async () => {\n'
   +'}\n'
   +'getUsers();';
 
-export const userFetch = 'const getUser = async (username) => {'
+export const userFetch = 'const getUser = async (username) => {\n'
   +'const response = await fetch(`https://heroku-coin-api.herokuapp.com/api/v1/users/${username}`);\n'
   +'  if(!response) {\n'
   +'    return Error(\'User not found\');\n'
