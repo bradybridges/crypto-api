@@ -72,7 +72,7 @@ app.get('/api/v1/users/:username', (request, response) => {
   database('users').where('username', request.params.username).select()
     .then((data) => {
       if(data.length) {
-        response.status(200).json(data);
+        response.status(200).json(data[0]);
       } else {
         response.status(404).json({
           error: `Unable to find user with username ${request.params.username}`
