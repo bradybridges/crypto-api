@@ -265,20 +265,29 @@ Returns Id of new record
 
 ### DELETE Coin Records For A Specific Date
 ```
-POST https://heroku-coin-api.herokuapp.com/api/v1/coindata
+DELETE https://heroku-coin-api.herokuapp.com/api/v1/coindata/:date
 ```
 
 ### Parameters 
-Name | Type | Description
----- | ---- | -----------
-`date` | `String` | ex `2019-11-29`
+Name | Description
+---- | -----------
+`date` | ex `2019-11-29`
+
+### Example
+```bash
+  fetch('https://heroku-coin-api.herokuapp.com/api/v1/coindata/2019-11-10',{
+    method: 'DELETE'
+  })
+  .then((resp) => resp.json())
+  .then((data) => console.log(data));
+```
 
 ### Response
 Status: 202 Accepted
 ------------ 
 ```
 {
-    "message": "Successfully deleted data on date: 2019-11-09"
+    "message": "Successfully deleted data on date: 2019-11-10"
 }
 ```
 
@@ -375,13 +384,22 @@ Status: 201 CREATED
 
 ### DELETE A User By Username
 ```
-POST https://heroku-coin-api.herokuapp.com/api/v1/users
+DELETE https://heroku-coin-api.herokuapp.com/api/v1/users/:username
 ```
 
 ### Parameters 
-Name | Type | Description
----- | ---- | -----------
-`username` | `String` | ex `Arya`
+Name | Description
+---- | -----------
+`username` | ex `Arya`
+
+### Example
+```bash
+  fetch('https://heroku-coin-api.herokuapp.com/api/v1/users/Arya', {
+    method: 'DELETE'
+  })
+  .then((resp) => resp.json())
+  .then((data) => console.log(data));
+```
 
 ### Response
 Status: 202 Accepted
