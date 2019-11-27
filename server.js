@@ -136,20 +136,20 @@ app.post('/api/v1/users', (request, response) => {
     })
 });
 
-app.delete('/api/v1/coindata', (request, response) => {
-  const body = request.body;
+app.delete('/api/v1/coindata/:date', (request, response) => {
+  const date = request.params.date;
   database('coindata')
-    .where({ date: body.date })
+    .where({ date })
     .select()
     .then((data) =>{
       if(!data.length) {
         return response.status(205).send({ error: 'No data to delete' });
       }
       database('coindata')
-        .where({ date: body.date })
+        .where({ date })
         .del()
         .then(() => {
-          response.status(202).json({ message: `Successfully deleted data on date: ${body.date}` });
+          response.status(202).json({ message: `Successfully deleted data on date: ${date}` });
         })
     })
     .catch((err) => {
@@ -157,10 +157,10 @@ app.delete('/api/v1/coindata', (request, response) => {
     });
 });
 
-app.delete('/api/v1/users', (request, response) => {
-  const body = request.body;
+app.delete('/api/v1/users/:username', (request, response) => {
+  const username = request.params.username;
   database('users')
-    .where({ username: body.username })
+    .where({ username })
     .select()
     .then((user) => {
       if(!user.length) {
@@ -168,10 +168,10 @@ app.delete('/api/v1/users', (request, response) => {
       }
 
       database('users')
-        .where({ username: body.username })
+        .where({ username })
         .del()
         .then(() => {
-          response.status(202).json({ message: `Successfully deleted user ${body.username}` });
+          response.status(202).json({ message: `Successfully deleted user ${username}` });
         });
     })
     .catch((err) => {
