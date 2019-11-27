@@ -139,6 +139,7 @@ class App extends Component {
             parameter='username'
           />
           <DeleteDiv
+            id='last-div'
             title='DELETE A Record On A Date'
             endpoint='https://heroku-coin-api.herokuapp.com/api/v1/users'
             handleClick={this.simulateDeleteRecord}
