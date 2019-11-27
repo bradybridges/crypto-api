@@ -8,6 +8,7 @@
 * [Documentation](#Documentation)
 
 ## Live Docs Page
+
 [Documentation](https://bradybridges.github.io/crypto-api-frontend/)
 
 ## Objective
