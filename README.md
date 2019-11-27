@@ -7,6 +7,9 @@
 * [Setup](#Setup)
 * [Documentation](#Documentation)
 
+## Live Docs Page
+[Documentation]('https://bradybridges.github.io/crypto-api-frontend/')
+
 ## Objective
 The objective of this project was to familiarize myself with express and knex. The goal of this project is to deploy a working RESTful API to Heroku that includes GET, POST, and DELETE endpoints. Another goal of this project is to develope an API that is easy to use, well documented, and returns data in a format that is convenient for the user.
   
